@@ -1,0 +1,11 @@
+ContractProvider.clearInstance();
+await new ContractProvider(CONTRACT_TYPE.TEST_COIN, new WalletProvider().getSigner(), address[0]);
+ContractProvider.call("mint", [address[0], BigInt(10e21)]);
+
+
+
+
+  checkIsConnected: async () => {
+  const accounts = await new WalletProvider().send("eth_accounts", []);
+  return accounts.length;
+  },
