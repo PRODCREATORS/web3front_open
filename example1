@@ -1,0 +1,39 @@
+import { ethers, providers, Signer } from "ethers";
+import { Web3Provider } from "@ethersproject/providers/src.ts/web3-provider";
+import { Network } from "@ethersproject/networks";
+
+export class WalletProvider {
+  private static instance: WalletProvider;
+  private _provider!: Web3Provider;
+
+  constructor() {
+    if (typeof WalletProvider.instance === "object") {
+      return WalletProvider.instance;
+    }
+    this._provider = new providers.Web3Provider(window.ethereum);
+    WalletProvider.instance = this;
+    return WalletProvider.instance;
+  }
+
+  static isProviderExist(): boolean {
+    return typeof window.ethereum !== "undefined";
+  }
+
+  send(method: string, params: Array<any>): Promise<any> {
+    return this._provider.send(method, params);
+  }
+
+  getNetwork(): Promise<Network> {
+    return this._provider.getNetwork();
+  }
+
+  getBalance(address: string): Promise<number> {
+    return this._provider.getBalance(address).then((balance) => {
+      return Number(ethers.utils.formatEther(balance));
+    });
+  }
+
+  getSigner(): Signer {
+    return this._provider.getSigner();
+  }
+}
